@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | POS Shop System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-blue-200 min-h-screen">
+  <nav class="bg-indigo-700 p-4 text-white shadow-lg">
+    <div class="flex justify-between items-center">
+      <span class="font-bold text-xl">POS Shop System</span>
+      <button id="menuToggle" class="sm:hidden focus:outline-none" aria-label="Open menu">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="navLinks" class="mt-3 sm:mt-0 flex-col sm:flex-row hidden sm:flex items-center">
+      <a href="dashboard.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Dashboard</a>
+      <a href="inventory.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Inventory</a>
+      <a href="sales.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sales</a>
+      <a href="reports.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Reports</a>
+      <a href="users.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Users</a>
+      <a href="profile.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Profile</a>
+      <a href="signup.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sign Up</a>
+      <a href="login.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Login</a>
+    </div>
+  </nav>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('hidden');
+      });
+    }
+  </script>
+  <main class="max-w-6xl mx-auto mt-10">
+    <h1 class="text-3xl sm:text-4xl font-extrabold mb-4 text-indigo-800 text-center sm:text-left">Welcome to your POS Shop System</h1>
+    <p class="text-base sm:text-lg text-gray-700 mb-8 text-center sm:text-left">Manage your sales, inventory, reports, and users all in one place.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+      <div class="flex items-center gap-2">
+        <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&rounded=true&size=40" alt="User Avatar" class="w-10 h-10 rounded-full shadow">
+        <span class="text-indigo-700 font-semibold">Hello, <span id="dashboardUser">User</span>!</span>
+      </div>
+      <button id="darkModeToggle" class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">Toggle Dark Mode</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 mb-10">
+      <a href="sales.html" class="block bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:bg-indigo-50 dark:hover:bg-gray-700 transition group">
+        <div class="flex items-center mb-3">
+          <svg class="w-8 h-8 text-indigo-600 group-hover:text-indigo-800 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M9 16h6m-6 4h6m-6-8V4a1 1 0 011-1h4a1 1 0 011 1v4"/></svg>
+          <h2 class="text-xl font-semibold ml-3">Sales</h2>
+        </div>
+        <p class="text-gray-600">View and manage sales transactions.</p>
+      </a>
+      <a href="inventory.html" class="block bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:bg-indigo-50 dark:hover:bg-gray-700 transition group">
+        <div class="flex items-center mb-3">
+          <svg class="w-8 h-8 text-green-600 group-hover:text-green-800 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18"/></svg>
+          <h2 class="text-xl font-semibold ml-3">Inventory</h2>
+        </div>
+        <p class="text-gray-600">Track and update inventory items.</p>
+      </a>
+      <a href="reports.html" class="block bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:bg-indigo-50 dark:hover:bg-gray-700 transition group">
+        <div class="flex items-center mb-3">
+          <svg class="w-8 h-8 text-yellow-500 group-hover:text-yellow-700 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 018 0v2M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <h2 class="text-xl font-semibold ml-3">Reports</h2>
+        </div>
+        <p class="text-gray-600">Generate and view business reports.</p>
+      </a>
+      <a href="users.html" class="block bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:bg-indigo-50 dark:hover:bg-gray-700 transition group">
+        <div class="flex items-center mb-3">
+          <svg class="w-8 h-8 text-pink-500 group-hover:text-pink-700 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M16 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <h2 class="text-xl font-semibold ml-3">Users</h2>
+        </div>
+        <p class="text-gray-600">Manage user accounts and roles.</p>
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 sm:p-6">
+        <h3 class="text-lg font-bold mb-4 text-indigo-700">Sales Overview</h3>
+        <canvas id="salesChart" height="180"></canvas>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 sm:p-6">
+        <h3 class="text-lg font-bold mb-4 text-green-700">Inventory Breakdown</h3>
+        <canvas id="inventoryChart" height="180"></canvas>
+      </div>
+    </div>
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 sm:p-6">
+        <h3 class="text-lg font-bold mb-2 text-indigo-700">Quick Stats</h3>
+        <ul class="space-y-2">
+          <li class="flex justify-between"><span>Total Sales Today:</span> <span class="font-semibold text-indigo-700">--</span></li>
+          <li class="flex justify-between"><span>Inventory Items:</span> <span class="font-semibold text-green-700">--</span></li>
+          <li class="flex justify-between"><span>Active Users:</span> <span class="font-semibold text-pink-700">--</span></li>
+        </ul>
+        <p class="text-xs text-gray-400 mt-3">(Stats coming soon!)</p>
+        <button id="refreshStats" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Refresh Stats</button>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 sm:p-6">
+        <h3 class="text-lg font-bold mb-2 text-indigo-700">Recent Activity</h3>
+        <ul class="list-disc pl-5 text-gray-600 space-y-1">
+          <li>Sales, inventory, and user activity will appear here.</li>
+        </ul>
+        <p class="text-xs text-gray-400 mt-3">(Activity feed coming soon!)</p>
+        <button id="refreshActivity" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Refresh Activity</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('dashboardDarkMode', document.documentElement.classList.contains('dark'));
+      });
+      // On load, set dark mode if previously enabled
+      if (localStorage.getItem('dashboardDarkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+      }
+    }
+    // Example: Set user name (replace with real user data)
+    const dashboardUser = document.getElementById('dashboardUser');
+    if (dashboardUser) {
+      dashboardUser.textContent = localStorage.getItem('dashboardUser') || 'User';
+    }
+    // Mobile nav interactivity (fixed: use menuToggle, not mobileMenuBtn)
+    const navMenuToggle = document.getElementById('menuToggle');
+    if (navMenuToggle && navLinks) {
+      navMenuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('hidden');
+      });
+      // Hide nav on link click (mobile)
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 640) navLinks.classList.add('hidden');
+        });
+      });
+      // Responsive: show nav on resize
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 640) navLinks.classList.remove('hidden');
+        else navLinks.classList.add('hidden');
+      });
+    }
+    // Fetch and render dashboard data from backend
+    async function fetchDashboardData() {
+      let salesData, inventoryData, quickStats, recentActivity;
+      let salesAvailable = true, inventoryAvailable = true, statsAvailable = true, activityAvailable = true;
+      try {
+        // Fetch all dashboard data from backend
+        const res = await fetch('http://localhost:3000/api/dashboard');
+        if (!res.ok) throw new Error('No data');
+        const data = await res.json();
+        // Sales chart
+        if (data.sales && data.sales.labels && data.sales.data) {
+          salesData = {
+            labels: data.sales.labels,
+            datasets: [{
+              label: 'Sales ($)',
+              data: data.sales.data,
+              backgroundColor: 'rgba(99, 102, 241, 0.5)',
+              borderColor: 'rgba(99, 102, 241, 1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4
+            }]
+          };
+        } else {
+          salesAvailable = false;
+        }
+        // Inventory chart
+        if (data.inventory && data.inventory.labels && data.inventory.data) {
+          inventoryData = {
+            labels: data.inventory.labels,
+            datasets: [{
+              label: 'Items',
+              data: data.inventory.data,
+              backgroundColor: data.inventory.colors || [
+                'rgba(16, 185, 129, 0.7)',
+                'rgba(251, 191, 36, 0.7)',
+                'rgba(236, 72, 153, 0.7)',
+                'rgba(59, 130, 246, 0.7)'
+              ],
+              borderColor: data.inventory.colors || [
+                'rgba(16, 185, 129, 1)',
+                'rgba(251, 191, 36, 1)',
+                'rgba(236, 72, 153, 1)',
+                'rgba(59, 130, 246, 1)'
+              ],
+              borderWidth: 1
+            }]
+          };
+        } else {
+          inventoryAvailable = false;
+        }
+        // Quick stats
+        if (data.stats && typeof data.stats === 'object') {
+          quickStats = data.stats;
+        } else {
+          statsAvailable = false;
+        }
+        // Recent activity
+        if (Array.isArray(data.activity)) {
+          recentActivity = data.activity;
+        } else {
+          activityAvailable = false;
+        }
+      } catch (err) {
+        salesAvailable = false;
+        inventoryAvailable = false;
+        statsAvailable = false;
+        activityAvailable = false;
+      }
+      return { salesData, inventoryData, salesAvailable, inventoryAvailable, quickStats, statsAvailable, recentActivity, activityAvailable };
+    }
+
+    function showNoData(canvasId, message) {
+      const canvas = document.getElementById(canvasId);
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = '#a1a1aa';
+        ctx.textAlign = 'center';
+        ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const {
+        salesData, inventoryData, salesAvailable, inventoryAvailable,
+        quickStats, statsAvailable, recentActivity, activityAvailable
+      } = await fetchDashboardData();
+      let salesChart, inventoryChart;
+      // Sales chart
+      if (salesAvailable && salesData) {
+        salesChart = new Chart(document.getElementById('salesChart'), {
+          type: 'line',
+          data: salesData,
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } }
+          }
+        });
+      } else {
+        showNoData('salesChart', 'No data available');
+      }
+      // Inventory chart
+      if (inventoryAvailable && inventoryData) {
+        inventoryChart = new Chart(document.getElementById('inventoryChart'), {
+          type: 'doughnut',
+          data: inventoryData,
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      } else {
+        showNoData('inventoryChart', 'No data available');
+      }
+      // Quick Stats
+      const statSales = document.querySelector('li span.font-semibold.text-indigo-700');
+      const statInventory = document.querySelector('li span.font-semibold.text-green-700');
+      const statUsers = document.querySelector('li span.font-semibold.text-pink-700');
+      if (statsAvailable && quickStats) {
+        if (statSales) statSales.textContent = quickStats.totalSalesToday ?? '0';
+        if (statInventory) statInventory.textContent = quickStats.inventoryItems ?? '0';
+        if (statUsers) statUsers.textContent = quickStats.activeUsers ?? '0';
+      } else {
+        if (statSales) statSales.textContent = 'No data';
+        if (statInventory) statInventory.textContent = 'No data';
+        if (statUsers) statUsers.textContent = 'No data';
+      }
+      // Recent Activity
+      const activityList = document.querySelector('ul.list-disc');
+      if (activityAvailable && Array.isArray(recentActivity) && activityList) {
+        activityList.innerHTML = '';
+        if (recentActivity.length === 0) {
+          const li = document.createElement('li');
+          li.textContent = 'No recent activity.';
+          activityList.appendChild(li);
+        } else {
+          recentActivity.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            activityList.appendChild(li);
+          });
+        }
+      } else if (activityList) {
+        activityList.innerHTML = '<li>No data available.</li>';
+      }
+      // Interactivity for refresh buttons
+      document.getElementById('refreshStats').addEventListener('click', async () => {
+        const {
+          salesData, inventoryData, salesAvailable, inventoryAvailable,
+          quickStats, statsAvailable, recentActivity, activityAvailable
+        } = await fetchDashboardData();
+        if (salesAvailable && salesData && salesChart) {
+          salesChart.data = salesData;
+          salesChart.update();
+        } else if (salesChart) {
+          salesChart.destroy();
+          showNoData('salesChart', 'No data available');
+        }
+        if (inventoryAvailable && inventoryData && inventoryChart) {
+          inventoryChart.data = inventoryData;
+          inventoryChart.update();
+        } else if (inventoryChart) {
+          inventoryChart.destroy();
+          showNoData('inventoryChart', 'No data available');
+        }
+        // Quick Stats
+        if (statsAvailable && quickStats) {
+          if (statSales) statSales.textContent = quickStats.totalSalesToday ?? '0';
+          if (statInventory) statInventory.textContent = quickStats.inventoryItems ?? '0';
+          if (statUsers) statUsers.textContent = quickStats.activeUsers ?? '0';
+        } else {
+          if (statSales) statSales.textContent = 'No data';
+          if (statInventory) statInventory.textContent = 'No data';
+          if (statUsers) statUsers.textContent = 'No data';
+        }
+        // Recent Activity
+        if (activityAvailable && Array.isArray(recentActivity) && activityList) {
+          activityList.innerHTML = '';
+          if (recentActivity.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = 'No recent activity.';
+            activityList.appendChild(li);
+          } else {
+            recentActivity.forEach(item => {
+              const li = document.createElement('li');
+              li.textContent = item;
+              activityList.appendChild(li);
+            });
+          }
+        } else if (activityList) {
+          activityList.innerHTML = '<li>No data available.</li>';
+        }
+      });
+      document.getElementById('refreshActivity').addEventListener('click', async () => {
+        // Only refresh activity section
+        const { recentActivity, activityAvailable } = await fetchDashboardData();
+        if (activityAvailable && Array.isArray(recentActivity) && activityList) {
+          activityList.innerHTML = '';
+          if (recentActivity.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = 'No recent activity.';
+            activityList.appendChild(li);
+          } else {
+            recentActivity.forEach(item => {
+              const li = document.createElement('li');
+              li.textContent = item;
+              activityList.appendChild(li);
+            });
+          }
+        } else if (activityList) {
+          activityList.innerHTML = '<li>No data available.</li>';
+        }
+      });
+      // Touch-friendly: scroll to top on nav click (mobile)
+      document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', e => {
+          if (window.innerWidth < 640) window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    });
+  </script>
+  <style>
+    html.dark {
+      background: linear-gradient(to bottom right, #18181b, #312e81) !important;
+    }
+    html.dark body {
+      background: transparent !important;
+      color: #e5e7eb !important;
+    }
+    html.dark .bg-white, html.dark .bg-gray-200, html.dark .bg-indigo-50 {
+      background-color: #232946 !important;
+      color: #e5e7eb !important;
+    }
+    html .bg-white, html .bg-gray-200, html .bg-indigo-50 {
+      background-color: #fff !important;
+      color: #1e293b !important;
+    }
+    html .dark\:bg-gray-800 { background-color: #f3f4f6 !important; }
+    html.dark .text-indigo-800, html.dark .text-indigo-700 { color: #a5b4fc !important; }
+    html .text-indigo-800, html .text-indigo-700 { color: #312e81 !important; }
+    html.dark .text-gray-700 { color: #d1d5db !important; }
+    html .text-gray-700 { color: #374151 !important; }
+    html.dark .text-green-700 { color: #6ee7b7 !important; }
+    html .text-green-700 { color: #047857 !important; }
+    html.dark .text-pink-700 { color: #f9a8d4 !important; }
+    html .text-pink-700 { color: #be185d !important; }
+    html.dark .text-yellow-700 { color: #fde68a !important; }
+    html .text-yellow-700 { color: #b45309 !important; }
+    html.dark .hover\:bg-indigo-50:hover, html.dark .hover\:bg-gray-300:hover { background-color: #232946 !important; }
+    html .hover\:bg-indigo-50:hover, html .hover\:bg-gray-300:hover { background-color: #f3f4f6 !important; }
+    html.dark .shadow-lg, html.dark .shadow { box-shadow: 0 2px 8px 0 rgba(0,0,0,0.32) !important; }
+    html .shadow-lg, html .shadow { box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08) !important; }
+    html.dark .rounded, html.dark .rounded-xl, html.dark .rounded-2xl { border-radius: 1rem !important; }
+    html .rounded, html .rounded-xl, html .rounded-2xl { border-radius: 1rem !important; }
+    html.dark .focus\:ring-indigo-400:focus { box-shadow: 0 0 0 2px #6366f1 !important; }
+    html .focus\:ring-indigo-400:focus { box-shadow: 0 0 0 2px #6366f1 !important; }
+    html.dark .text-gray-600 { color: #a1a1aa !important; }
+    html .text-gray-600 { color: #6b7280 !important; }
+    html.dark .font-semibold { font-weight: 600 !important; }
+    html .font-semibold { font-weight: 600 !important; }
+    html.dark .bg-indigo-700 { background-color: #312e81 !important; }
+    html .bg-indigo-700 { background-color: #4f46e5 !important; }
+    html.dark .bg-green-700 { background-color: #047857 !important; }
+    html .bg-green-700 { background-color: #22c55e !important; }
+    html.dark .bg-pink-700 { background-color: #be185d !important; }
+    html .bg-pink-700 { background-color: #ec4899 !important; }
+    html.dark .bg-yellow-700 { background-color: #b45309 !important; }
+    html .bg-yellow-700 { background-color: #f59e42 !important; }
+    html.dark .text-white { color: #f3f4f6 !important; }
+    html .text-white { color: #fff !important; }
+    html.dark .text-black { color: #e5e7eb !important; }
+    html .text-black { color: #18181b !important; }
+    html.dark .border-gray-300 { border-color: #374151 !important; }
+    html .border-gray-300 { border-color: #d1d5db !important; }
+    html.dark .bg-gradient-to-br { background: linear-gradient(to bottom right, #18181b, #312e81) !important; }
+    html .bg-gradient-to-br { background: linear-gradient(to bottom right, #f1f5f9, #6366f1) !important; }
+    html.dark .transition { transition: background 0.3s, color 0.3s; }
+    html .transition { transition: background 0.3s, color 0.3s; }
+    @media (max-width: 640px) {
+      .p-8 { padding: 1.25rem !important; }
+      .mb-10 { margin-bottom: 1.5rem !important; }
+      .rounded-2xl, .rounded-xl { border-radius: 1rem !important; }
+      .text-4xl { font-size: 2rem !important; }
+      .text-lg { font-size: 1rem !important; }
+      .max-w-6xl { max-width: 100vw !important; }
+      .shadow-lg, .shadow { box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08) !important; }
+      .grid { gap: 1rem !important; }
+      .flex { flex-direction: column !important; }
+      .sm\\:flex-row { flex-direction: row !important; }
+      .sm\\:flex { display: flex !important; }
+      .sm\\:hidden { display: none !important; }
+    }
+  </style>
+</body>
+</html>

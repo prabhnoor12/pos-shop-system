@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int                @id @default(autoincrement())
+  tenantId           Int
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  email              String             @unique
+  password           String
+  name               String
+  role               String
+  marketingConsent   Boolean            @default(false)
+  deletedAt          DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  sales              Sale[]
+  auditLogs          AuditLog[]
+  inventoryHistories InventoryHistory[]
+  StoreUser          StoreUser[]
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  products  Product[]
+}
+
+model Product {
+  id                 Int                @id @default(autoincrement())
+  tenantId           Int
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  name               String
+  sku                String             @unique
+  barcode            String?            @unique
+  categoryId         Int
+  price              Float
+  cost               Float
+  isActive           Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  deletedAt          DateTime?
+  category           Category           @relation(fields: [categoryId], references: [id])
+  inventory          Inventory[]
+  saleItems          SaleItem[]
+  inventoryHistories InventoryHistory[]
+  stockMovements     StockMovement[]
+}
+
+model Store {
+  id         Int         @id @default(autoincrement())
+  tenantId   Int
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  name       String
+  location   String?
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  inventory  Inventory[]
+  sales      Sale[]
+  storeUsers StoreUser[]
+  Register   Register[]
+}
+
+model StoreUser {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  storeId Int
+  role    String
+  user    User   @relation(fields: [userId], references: [id])
+  store   Store  @relation(fields: [storeId], references: [id])
+
+  @@unique([userId, storeId])
+}
+
+model Inventory {
+  id          Int                @id @default(autoincrement())
+  tenantId    Int
+  tenant      Tenant             @relation(fields: [tenantId], references: [id])
+  productId   Int
+  quantity    Int
+  location    String?
+  minStock    Int                @default(0)
+  maxStock    Int?
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  deletedAt   DateTime?
+  product     Product            @relation(fields: [productId], references: [id])
+  history     InventoryHistory[]
+  storeId     Int
+  store       Store              @relation(fields: [storeId], references: [id])
+  batches     Batch[]
+  serials     SerialNumber[]
+  Warehouse   Warehouse?         @relation(fields: [warehouseId], references: [id])
+  warehouseId Int?
+}
+
+model InventoryHistory {
+  id             Int       @id @default(autoincrement())
+  inventoryId    Int
+  productId      Int
+  quantityBefore Int
+  quantityAfter  Int
+  reason         String
+  userId         Int?
+  createdAt      DateTime  @default(now())
+  offlineId      String?   @unique
+  synced         Boolean   @default(false)
+  source         String    @default("online")
+  inventory      Inventory @relation(fields: [inventoryId], references: [id])
+  product        Product   @relation(fields: [productId], references: [id])
+  user           User?     @relation(fields: [userId], references: [id])
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  tenantId  Int
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  name      String
+  email     String?   @unique
+  phone     String?   @unique
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  sales     Sale[]
+}
+
+model Tenant {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  users     User[]
+  stores    Store[]
+  products  Product[]
+  inventory Inventory[]
+  sales     Sale[]
+  Customer  Customer[]
+  Warehouse Warehouse[]
+  Supplier  Supplier[]
+  Register  Register[]
+}
+
+model Warehouse {
+  id                 Int             @id @default(autoincrement())
+  name               String
+  location           String?
+  tenantId           Int
+  tenant             Tenant          @relation(fields: [tenantId], references: [id])
+  inventories        Inventory[]
+  stockMovementsFrom StockMovement[] @relation("FromWarehouse")
+  stockMovementsTo   StockMovement[] @relation("ToWarehouse")
+}
+
+model Batch {
+  id          Int       @id @default(autoincrement())
+  inventoryId Int
+  batchNumber String
+  expiryDate  DateTime?
+  quantity    Int
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+}
+
+model SerialNumber {
+  id           Int       @id @default(autoincrement())
+  inventoryId  Int
+  serialNumber String    @unique
+  expiryDate   DateTime?
+  inventory    Inventory @relation(fields: [inventoryId], references: [id])
+}
+
+model StockMovement {
+  id              Int        @id @default(autoincrement())
+  productId       Int
+  fromWarehouseId Int?
+  toWarehouseId   Int?
+  quantity        Int
+  reason          String
+  userId          Int?
+  createdAt       DateTime   @default(now())
+  product         Product    @relation(fields: [productId], references: [id])
+  fromWarehouse   Warehouse? @relation("FromWarehouse", fields: [fromWarehouseId], references: [id])
+  toWarehouse     Warehouse? @relation("ToWarehouse", fields: [toWarehouseId], references: [id])
+}
+
+model Supplier {
+  id        Int       @id @default(autoincrement())
+  tenantId  Int
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  name      String
+  email     String?
+  phone     String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Sale {
+  id          Int        @id @default(autoincrement())
+  tenantId    Int
+  tenant      Tenant     @relation(fields: [tenantId], references: [id])
+  customerId  Int?
+  userId      Int?
+  total       Float
+  paymentType String
+  paid        Boolean    @default(true)
+  saleDate    DateTime   @default(now())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  registerId  Int
+  register    Register   @relation(fields: [registerId], references: [id])
+  offlineId   String?    @unique
+  synced      Boolean    @default(false)
+  source      String     @default("online")
+  customer    Customer?  @relation(fields: [customerId], references: [id])
+  user        User?      @relation(fields: [userId], references: [id])
+  items       SaleItem[]
+  storeId     Int
+  store       Store      @relation(fields: [storeId], references: [id])
+}
+
+model SaleItem {
+  id        Int     @id @default(autoincrement())
+  saleId    Int
+  productId Int
+  quantity  Int
+  price     Float
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model AuditLog {
+  id      Int    @id @default(autoincrement())
+  event   String
+  details String
+  userId  Int?
+  User    User?  @relation(fields: [userId], references: [id])
+}
+
+model Register {
+  id          Int      @id @default(autoincrement())
+  tenantId    Int
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  storeId     Int
+  store       Store    @relation(fields: [storeId], references: [id])
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  sales       Sale[]
+}

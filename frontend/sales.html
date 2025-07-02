@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales | POS Shop System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Simple mobile menu toggle
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-blue-200 min-h-screen">
+  <nav class="bg-indigo-700 p-4 text-white flex justify-between items-center shadow-lg relative">
+    <span class="font-bold text-xl">POS Shop Sales</span>
+    <button class="sm:hidden p-2 focus:outline-none" aria-label="Open menu" onclick="toggleMenu()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div class="hidden sm:flex gap-4" id="desktopMenu">
+      <a href="dashboard.html" class="hover:underline">Dashboard</a>
+      <a href="inventory.html" class="hover:underline">Inventory</a>
+      <a href="sales.html" class="hover:underline">Sales</a>
+      <a href="reports.html" class="hover:underline">Reports</a>
+      <a href="users.html" class="hover:underline">Users</a>
+      <a href="profile.html" class="hover:underline">Profile</a>
+      <a href="login.html" class="hover:underline">Logout</a>
+    </div>
+    <div class="absolute top-full left-0 w-full bg-indigo-700 text-white flex-col gap-2 py-2 px-4 hidden sm:hidden z-50" id="mobileMenu">
+      <a href="dashboard.html" class="block py-2 hover:underline">Dashboard</a>
+      <a href="inventory.html" class="block py-2 hover:underline">Inventory</a>
+      <a href="sales.html" class="block py-2 hover:underline">Sales</a>
+      <a href="reports.html" class="block py-2 hover:underline">Reports</a>
+      <a href="users.html" class="block py-2 hover:underline">Users</a>
+      <a href="profile.html" class="block py-2 hover:underline">Profile</a>
+      <a href="login.html" class="block py-2 hover:underline">Logout</a>
+    </div>
+  </nav>
+  <main class="max-w-4xl mx-auto mt-10 px-2 sm:px-4">
+    <h1 class="text-3xl font-bold mb-6 text-indigo-800 flex items-center gap-2">
+      <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 17v-2a4 4 0 014-4h10a4 4 0 014 4v2"></path></svg>
+      Sales Register
+    </h1>
+    <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-8">
+      <form id="saleForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+        <div>
+          <label class="block text-sm font-medium mb-1" for="productSelect">Product</label>
+          <select id="productSelect" required title="Product" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"></select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="quantityInput">Quantity</label>
+          <input id="quantityInput" type="number" min="1" required title="Quantity" placeholder="Enter quantity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div class="sm:col-span-2 flex gap-2">
+          <button type="submit" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-200">Add Sale</button>
+          <button type="button" id="refreshBtn" class="py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-200">Refresh</button>
+        </div>
+      </form>
+      <div class="mt-4 flex flex-col sm:flex-row gap-2">
+        <input id="searchSalesInput" type="text" placeholder="Search sales by product..." class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full sm:w-64">
+        <select title="filterProduct" id="filterProduct" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full sm:w-48">
+          <option value="">All Products</option>
+        </select>
+        <button id="exportBtn" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Export CSV</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 17l4-4 4 4m0 0V3m0 14l-4-4-4 4"></path></svg>
+        Recent Sales
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left rounded-lg overflow-hidden">
+          <thead>
+            <tr class="bg-indigo-100">
+              <th class="py-2 px-2 sm:px-3">Date</th>
+              <th class="py-2 px-2 sm:px-3">Product</th>
+              <th class="py-2 px-2 sm:px-3">Quantity</th>
+              <th class="py-2 px-2 sm:px-3">Total</th>
+            </tr>
+          </thead>
+          <tbody id="salesTable">
+            <tr><td colspan="4" class="text-center py-4 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="salesMsg" class="text-center text-sm"></div>
+  </main>
+  <script>
+    async function fetchProducts() {
+      try {
+        const res = await fetch('http://localhost:3000/api/products');
+        if (!res.ok) throw new Error('No data');
+        return await res.json();
+      } catch (err) {
+        return [];
+      }
+    }
+    async function fetchSales() {
+      try {
+        const res = await fetch('http://localhost:3000/api/sales');
+        if (!res.ok) throw new Error('No data');
+        return await res.json();
+      } catch (err) {
+        return [];
+      }
+    }
+    async function addSale(sale) {
+      const res = await fetch('http://localhost:3000/api/sales', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sale)
+      });
+      return res.ok;
+    }
+    function renderProductOptions(products) {
+      const select = document.getElementById('productSelect');
+      select.innerHTML = '<option value="">Select product</option>' +
+        products.map(p => `<option value="${p.id}">${p.product} (${p.stock} in stock)</option>`).join('');
+      // Advanced: populate filter dropdown
+      const filter = document.getElementById('filterProduct');
+      if (filter) {
+        filter.innerHTML = '<option value="">All Products</option>' +
+          products.map(p => `<option value="${p.product}">${p.product}</option>`).join('');
+      }
+    }
+    function renderSalesTable(sales) {
+      const table = document.getElementById('salesTable');
+      // Advanced: filter and search
+      let filtered = sales;
+      const search = document.getElementById('searchSalesInput').value.toLowerCase();
+      const filterProduct = document.getElementById('filterProduct').value;
+      if (search) {
+        filtered = filtered.filter(s => s.product.toLowerCase().includes(search));
+      }
+      if (filterProduct) {
+        filtered = filtered.filter(s => s.product === filterProduct);
+      }
+      if (!filtered || filtered.length === 0) {
+        table.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-400">No data available</td></tr>';
+        return;
+      }
+      table.innerHTML = filtered.map(sale => `
+        <tr>
+          <td class="py-2 px-3">${sale.date}</td>
+          <td class="py-2 px-3">${sale.product}</td>
+          <td class="py-2 px-3">${sale.quantity}</td>
+          <td class="py-2 px-3">$${sale.total.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+    // Advanced: Export CSV
+    document.getElementById('exportBtn').addEventListener('click', async () => {
+      const sales = await fetchSales();
+      let csv = 'Date,Product,Quantity,Total\n';
+      sales.forEach(s => {
+        csv += `${s.date},${s.product},${s.quantity},${s.total}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sales.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+    // Advanced: search/filter listeners
+    document.getElementById('searchSalesInput').addEventListener('input', loadSales);
+    document.getElementById('filterProduct').addEventListener('change', loadSales);
+    async function loadProducts() {
+      const products = await fetchProducts();
+      renderProductOptions(products);
+    }
+    async function loadSales() {
+      const sales = await fetchSales();
+      renderSalesTable(sales);
+    }
+    document.getElementById('saleForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const productId = document.getElementById('productSelect').value;
+      const quantity = parseInt(document.getElementById('quantityInput').value, 10);
+      if (!productId || !quantity || quantity < 1) return;
+      const success = await addSale({ productId, quantity });
+      const msg = document.getElementById('salesMsg');
+      if (success) {
+        msg.textContent = 'Sale added!';
+        msg.className = 'text-green-600 text-center text-sm';
+        document.getElementById('saleForm').reset();
+        await loadSales();
+        await loadProducts();
+      } else {
+        msg.textContent = 'Failed to add sale.';
+        msg.className = 'text-red-600 text-center text-sm';
+      }
+    });
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+      await loadSales();
+      await loadProducts();
+    });
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadProducts();
+      await loadSales();
+    });
+  </script>
+</body>
+</html>

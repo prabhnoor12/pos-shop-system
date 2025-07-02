@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | POS Shop System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-blue-200 min-h-screen">
+  <nav class="bg-indigo-700 p-4 text-white shadow-lg">
+    <div class="flex justify-between items-center">
+      <span class="font-bold text-xl">POS Shop System</span>
+      <button id="menuToggle" class="sm:hidden focus:outline-none" aria-label="Open menu">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="navLinks" class="mt-3 sm:mt-0 flex-col sm:flex-row sm:flex hidden sm:flex items-center">
+      <a href="dashboard.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Dashboard</a>
+      <a href="inventory.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Inventory</a>
+      <a href="sales.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sales</a>
+      <a href="reports.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Reports</a>
+      <a href="users.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Users</a>
+      <a href="profile.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Profile</a>
+      <a href="signup.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sign Up</a>
+      <a href="login.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Login</a>
+    </div>
+  </nav>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('hidden');
+      });
+    }
+  </script>
+  <main class="max-w-xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6 text-indigo-800">User Profile</h1>
+    <div class="bg-white rounded-xl shadow p-6 mb-8">
+      <form id="profileForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Name</label>
+          <input title="name" id="nameInput" type="text" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Email</label>
+          <input title="email" id="emailInput" type="email" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" disabled>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Business Name</label>
+          <input title="business name" id="businessNameInput" type="text" placeholder="Your business name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Business Address</label>
+          <input title="business address" id="businessAddressInput" type="text" placeholder="Business address" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Phone Number</label>
+          <input title="phone number" id="businessPhoneInput" type="tel" placeholder="Business phone number" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Change Password</label>
+          <input id="passwordInput" type="password" placeholder="Leave blank to keep current" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <button type="submit" class="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-200">Save Changes</button>
+      </form>
+    </div>
+    <div id="profileMsg" class="text-center text-sm"></div>
+  </main>
+  <script>
+    async function fetchProfile() {
+      try {
+        const res = await fetch('http://localhost:3000/api/profile', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch profile');
+        return await res.json();
+      } catch (err) {
+        return null;
+      }
+    }
+    async function updateProfile(data) {
+      const res = await fetch('http://localhost:3000/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data)
+      });
+      return res.ok;
+    }
+    async function loadProfile() {
+      const profile = await fetchProfile();
+      if (profile) {
+        document.getElementById('nameInput').value = profile.name || '';
+        document.getElementById('emailInput').value = profile.email || '';
+        document.getElementById('businessNameInput').value = profile.businessName || '';
+        document.getElementById('businessAddressInput').value = profile.businessAddress || '';
+        document.getElementById('businessPhoneInput').value = profile.businessPhone || '';
+      }
+    }
+    document.getElementById('profileForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      const businessName = document.getElementById('businessNameInput').value.trim();
+      const businessAddress = document.getElementById('businessAddressInput').value.trim();
+      const businessPhone = document.getElementById('businessPhoneInput').value.trim();
+      const data = { name, businessName, businessAddress, businessPhone };
+      if (password) data.password = password;
+      const success = await updateProfile(data);
+      const msg = document.getElementById('profileMsg');
+      if (success) {
+        msg.textContent = 'Profile updated successfully!';
+        msg.className = 'text-green-600 text-center text-sm';
+        document.getElementById('passwordInput').value = '';
+      } else {
+        msg.textContent = 'Failed to update profile.';
+        msg.className = 'text-red-600 text-center text-sm';
+      }
+    });
+    window.addEventListener('DOMContentLoaded', loadProfile);
+  </script>
+</body>
+</html>

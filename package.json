@@ -1,0 +1,50 @@
+{
+  "name": "pos-shop-system",
+  "version": "1.0.0",
+  "description": "A POS shop system with backend and frontend",
+  "main": "backend/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/app.js",
+    "dev": "nodemon backend/app.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.10.1",
+    "@sentry/node": "^9.33.0",
+    "@zxing/library": "^0.21.3",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "bottleneck": "^2.19.5",
+    "bwip-js": "^4.6.0",
+    "canvas": "^3.1.2",
+    "cors": "^2.8.5",
+    "csurf": "^1.2.2",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.1",
+    "fs": "^0.0.1-security",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.1",
+    "mysql2": "^3.9.7",
+    "node-cron": "^4.2.0",
+    "p-queue": "^8.1.0",
+    "path": "^0.12.7",
+    "redis": "^5.5.6",
+    "sequelize": "^6.37.1",
+    "socket.io": "^4.8.1",
+    "url": "^0.11.4",
+    "uuid": "^9.0.1",
+    "winston": "^3.17.0",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "prisma": "^6.10.1"
+  }
+}

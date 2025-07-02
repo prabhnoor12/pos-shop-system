@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory | POS Shop System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-blue-200 min-h-screen">
+  <nav class="bg-indigo-700 p-4 text-white shadow-lg">
+    <div class="flex justify-between items-center">
+      <span class="font-bold text-xl">POS Shop System</span>
+      <button id="menuToggle" class="sm:hidden focus:outline-none" aria-label="Open menu">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="navLinks" class="mt-3 sm:mt-0 flex-col sm:flex-row sm:flex hidden sm:flex items-center">
+      <a href="dashboard.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Dashboard</a>
+      <a href="inventory.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Inventory</a>
+      <a href="sales.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sales</a>
+      <a href="reports.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Reports</a>
+      <a href="users.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Users</a>
+      <a href="profile.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Profile</a>
+      <a href="signup.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sign Up</a>
+      <a href="login.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Login</a>
+    </div>
+  </nav>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('hidden');
+      });
+    }
+  </script>
+  <main class="max-w-5xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6 text-indigo-800">Inventory Management</h1>
+    <div class="bg-white rounded-xl shadow p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-4">Inventory Overview</h2>
+      <canvas id="inventoryChart" height="160"></canvas>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <select id="storeFilter" title="Store" aria-label="Store" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full sm:w-48">
+            <option value="">All Stores</option>
+          </select>
+          <input id="searchInput" type="text" placeholder="Search product..." class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full sm:w-64">
+          <select  title="categoryFilter"   id="categoryFilter" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full sm:w-48">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div class="flex gap-2">
+          <button id="refreshInventory" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Refresh</button>
+          <button id="addItemBtn" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Add Item</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left">
+          <thead>
+            <tr class="bg-indigo-100">
+              <th class="py-2 px-3">Product</th>
+              <th class="py-2 px-3">Category</th>
+              <th class="py-2 px-3">Stock</th>
+              <th class="py-2 px-3">Price</th>
+              <th class="py-2 px-3">Supplier</th>
+              <th class="py-2 px-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryTable">
+            <tr><td colspan="6" class="text-center py-4 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Add/Edit Modal -->
+    <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
+        <button id="closeModal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700">&times;</button>
+        <h2 id="modalTitle" class="text-xl font-bold mb-4">Add Item</h2>
+        <form id="itemForm" class="space-y-4">
+          <input type="hidden" id="editIndex">
+          <div>
+            <label class="block text-sm font-medium mb-1" for="productInput">Product</label>
+            <input id="productInput" type="text" required title="Product" placeholder="Enter product name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" for="categoryInput">Category</label>
+            <input id="categoryInput" type="text" required title="Category" placeholder="Enter category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" for="stockInput">Stock</label>
+            <input id="stockInput" type="number" min="0" required title="Stock" placeholder="Enter stock quantity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" for="priceInput">Price</label>
+            <input id="priceInput" type="number" min="0" step="0.01" required title="Price" placeholder="Enter price" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" for="supplierInput">Supplier</label>
+            <input id="supplierInput" type="text" required title="Supplier" placeholder="Enter supplier name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          </div>
+          <button type="submit" class="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-200">Save</button>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script>
+    let inventoryData = [];
+    let editingIndex = null;
+
+
+    async function fetchStores() {
+      try {
+        const res = await fetch('http://localhost:3000/api/stores');
+        if (!res.ok) throw new Error('No stores');
+        const data = await res.json();
+        return Array.isArray(data.data) ? data.data : data;
+      } catch (err) {
+        return [];
+      }
+    }
+
+    async function fetchInventoryData(storeId = '') {
+      try {
+        let url = 'http://localhost:3000/api/inventory';
+        if (storeId) url += `?storeId=${encodeURIComponent(storeId)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('No data');
+        return await res.json();
+      } catch (err) {
+        return null;
+      }
+    }
+
+    async function addInventoryItem(item) {
+      const storeId = document.getElementById('storeFilter').value;
+      if (!storeId) {
+        alert('Please select a store before adding inventory.');
+        return false;
+      }
+      const payload = { ...item, storeId: Number(storeId) };
+      const res = await fetch('http://localhost:3000/api/inventory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return res.ok;
+    }
+
+    async function updateInventoryItem(id, item) {
+      const storeId = document.getElementById('storeFilter').value;
+      if (!storeId) {
+        alert('Please select a store before updating inventory.');
+        return false;
+      }
+      const payload = { ...item, storeId: Number(storeId) };
+      const res = await fetch(`http://localhost:3000/api/inventory/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return res.ok;
+    }
+
+    function renderInventoryChart(data) {
+      const ctx = document.getElementById('inventoryChart').getContext('2d');
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        ctx.clearRect(0, 0, 400, 160);
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = '#a1a1aa';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data available', 200, 80);
+        return;
+      }
+      const categories = {};
+      data.forEach(item => {
+        categories[item.category] = (categories[item.category] || 0) + item.stock;
+      });
+      const chartData = {
+        labels: Object.keys(categories),
+        datasets: [{
+          label: 'Stock by Category',
+          data: Object.values(categories),
+          backgroundColor: [
+            'rgba(99, 102, 241, 0.7)',
+            'rgba(16, 185, 129, 0.7)',
+            'rgba(251, 191, 36, 0.7)',
+            'rgba(236, 72, 153, 0.7)',
+            'rgba(59, 130, 246, 0.7)'
+          ],
+          borderWidth: 1
+        }]
+      };
+      new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderInventoryTable(data) {
+      const table = document.getElementById('inventoryTable');
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        table.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-400">No data available</td></tr>';
+        return;
+      }
+      const lowStockThreshold = 5;
+      table.innerHTML = data.map((item, idx) => `
+        <tr class="${item.stock < lowStockThreshold ? 'bg-red-100' : ''}">
+          <td class="py-2 px-3">${item.product}</td>
+          <td class="py-2 px-3">${item.category}</td>
+          <td class="py-2 px-3">${item.stock}</td>
+          <td class="py-2 px-3">$${item.price.toFixed(2)}</td>
+          <td class="py-2 px-3">${item.supplier}</td>
+          <td class="py-2 px-3">
+            <button class="editBtn text-indigo-600 hover:underline mr-2" data-idx="${idx}">Edit</button>
+            <button class="deleteBtn text-red-600 hover:underline" data-idx="${idx}">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+      // Attach edit handlers
+      document.querySelectorAll('.editBtn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = e.target.getAttribute('data-idx');
+          openEditModal(idx);
+        });
+      });
+      // Attach delete handlers
+      document.querySelectorAll('.deleteBtn').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          const idx = e.target.getAttribute('data-idx');
+          const item = inventoryData[idx];
+          if (confirm(`Delete item '${item.product}'? This action cannot be undone.`)) {
+            const success = await deleteInventoryItem(item.id);
+            if (success) {
+              await loadInventory();
+            } else {
+              alert('Failed to delete item.');
+            }
+          }
+        });
+      });
+    }
+    async function deleteInventoryItem(id) {
+      const res = await fetch(`http://localhost:3000/api/inventory/${id}`, {
+        method: 'DELETE'
+      });
+      return res.ok;
+    }
+
+    function renderCategoryFilter(data) {
+      const select = document.getElementById('categoryFilter');
+      const categories = Array.from(new Set((data || []).map(i => i.category))).sort();
+      select.innerHTML = '<option value="">All Categories</option>' + categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    }
+
+    function filterAndRender() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const category = document.getElementById('categoryFilter').value;
+      const lowStockOnly = document.getElementById('lowStockToggle')?.checked;
+      let filtered = inventoryData;
+      if (search) {
+        filtered = filtered.filter(i => i.product.toLowerCase().includes(search));
+      }
+      if (category) {
+        filtered = filtered.filter(i => i.category === category);
+      }
+      if (lowStockOnly) {
+        filtered = filtered.filter(i => i.stock < 5);
+      }
+      renderInventoryTable(filtered);
+      renderInventoryChart(filtered);
+    }
+
+
+    async function loadStoresAndInventory() {
+      const stores = await fetchStores();
+      const storeSelect = document.getElementById('storeFilter');
+      storeSelect.innerHTML = '<option value="">All Stores</option>' + stores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+      const selectedStoreId = storeSelect.value;
+      const data = await fetchInventoryData(selectedStoreId);
+      inventoryData = data && data.data ? data.data : (data || []);
+      renderCategoryFilter(inventoryData);
+      filterAndRender();
+    }
+
+    // Modal logic
+    function openAddModal() {
+      const storeId = document.getElementById('storeFilter').value;
+      if (!storeId) {
+        alert('Please select a store before adding inventory.');
+        return;
+      }
+      document.getElementById('modalTitle').textContent = 'Add Item';
+      document.getElementById('itemForm').reset();
+      document.getElementById('editIndex').value = '';
+      document.getElementById('itemModal').classList.remove('hidden');
+    }
+    function openEditModal(idx) {
+      const item = inventoryData[idx];
+      document.getElementById('modalTitle').textContent = 'Edit Item';
+      document.getElementById('editIndex').value = idx;
+      document.getElementById('productInput').value = item.product;
+      document.getElementById('categoryInput').value = item.category;
+      document.getElementById('stockInput').value = item.stock;
+      document.getElementById('priceInput').value = item.price;
+      document.getElementById('supplierInput').value = item.supplier;
+      document.getElementById('itemModal').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('itemModal').classList.add('hidden');
+    }
+
+    document.getElementById('refreshInventory').addEventListener('click', loadStoresAndInventory);
+    document.getElementById('searchInput').addEventListener('input', filterAndRender);
+    document.getElementById('categoryFilter').addEventListener('change', filterAndRender);
+    document.getElementById('addItemBtn').addEventListener('click', openAddModal);
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    document.getElementById('itemModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+    document.getElementById('itemForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const idx = document.getElementById('editIndex').value;
+      const item = {
+        product: document.getElementById('productInput').value.trim(),
+        category: document.getElementById('categoryInput').value.trim(),
+        stock: parseInt(document.getElementById('stockInput').value, 10),
+        price: parseFloat(document.getElementById('priceInput').value),
+        supplier: document.getElementById('supplierInput').value.trim()
+      };
+      let success = false;
+      if (idx === '') {
+        // Add
+        success = await addInventoryItem(item);
+      } else {
+        // Edit
+        const id = inventoryData[idx].id;
+        success = await updateInventoryItem(id, item);
+      }
+      if (success) {
+        closeModal();
+        await loadStoresAndInventory();
+      } else {
+        alert('Failed to save item.');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Insert low stock toggle
+      const filterBar = document.querySelector('.flex.flex-col.sm\:flex-row.gap-2');
+      if (filterBar && !document.getElementById('lowStockToggle')) {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-1 mt-2 sm:mt-0';
+        div.innerHTML = `
+          <input type="checkbox" id="lowStockToggle" class="mr-1">
+          <label for="lowStockToggle" class="text-sm">Low Stock Only</label>
+        `;
+        filterBar.appendChild(div);
+        document.getElementById('lowStockToggle').addEventListener('change', filterAndRender);
+      }
+      document.getElementById('storeFilter').addEventListener('change', loadStoresAndInventory);
+      loadStoresAndInventory();
+    });
+  </script>
+</body>
+</html>

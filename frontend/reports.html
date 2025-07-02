@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | POS Shop System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-blue-200 min-h-screen">
+  <nav class="bg-indigo-700 p-4 text-white shadow-lg">
+    <div class="flex justify-between items-center">
+      <span class="font-bold text-xl">POS Shop System</span>
+      <button id="menuToggle" class="sm:hidden focus:outline-none" aria-label="Open menu">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="navLinks" class="mt-3 sm:mt-0 flex-col sm:flex-row sm:flex hidden sm:flex items-center">
+      <a href="dashboard.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Dashboard</a>
+      <a href="inventory.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Inventory</a>
+      <a href="sales.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sales</a>
+      <a href="reports.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Reports</a>
+      <a href="users.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Users</a>
+      <a href="profile.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Profile</a>
+      <a href="signup.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Sign Up</a>
+      <a href="login.html" class="block px-3 py-2 rounded hover:bg-indigo-600 transition">Login</a>
+    </div>
+  </nav>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('hidden');
+      });
+    }
+  </script>
+  <main class="max-w-5xl mx-auto mt-10 px-2 sm:px-4">
+    <h1 class="text-3xl font-bold mb-6 text-indigo-800 flex items-center gap-2">
+      <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h4m0 0V7m0 4l-4-4m0 0l-4 4"></path></svg>
+      Reports & Analytics
+    </h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 17v-2a4 4 0 014-4h10a4 4 0 014 4v2"></path></svg>
+          Sales Overview
+        </h2>
+        <div class="w-full overflow-x-auto">
+          <canvas id="salesChart" height="120" class="bg-gray-50 rounded"></canvas>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+          Inventory Summary
+        </h2>
+        <div class="w-full overflow-x-auto">
+          <canvas id="inventoryChart" height="120" class="bg-gray-50 rounded"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 17l4-4 4 4m0 0V3m0 14l-4-4-4 4"></path></svg>
+        Recent Sales
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left rounded-lg overflow-hidden">
+          <thead>
+            <tr class="bg-indigo-100">
+              <th class="py-2 px-2 sm:px-3">Date</th>
+              <th class="py-2 px-2 sm:px-3">Product</th>
+              <th class="py-2 px-2 sm:px-3">Quantity</th>
+              <th class="py-2 px-2 sm:px-3">Total</th>
+            </tr>
+          </thead>
+          <tbody id="salesTable">
+            <tr><td colspan="4" class="text-center py-4 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script>
+    async function fetchReports() {
+      try {
+        const res = await fetch('http://localhost:3000/api/reports');
+        if (!res.ok) throw new Error('No data');
+        return await res.json();
+      } catch (err) {
+        return null;
+      }
+    }
+    function renderSalesChart(data) {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      if (!data || !data.salesByDay || data.salesByDay.length === 0) {
+        ctx.clearRect(0, 0, 400, 120);
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = '#a1a1aa';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data available', 200, 60);
+        return;
+      }
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.salesByDay.map(d => d.date),
+          datasets: [{
+            label: 'Sales',
+            data: data.salesByDay.map(d => d.total),
+            borderColor: 'rgba(99,102,241,1)',
+            backgroundColor: 'rgba(99,102,241,0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+    function renderInventoryChart(data) {
+      const ctx = document.getElementById('inventoryChart').getContext('2d');
+      if (!data || !data.inventoryByCategory || data.inventoryByCategory.length === 0) {
+        ctx.clearRect(0, 0, 400, 120);
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = '#a1a1aa';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data available', 200, 60);
+        return;
+      }
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.inventoryByCategory.map(c => c.category),
+          datasets: [{
+            label: 'Stock',
+            data: data.inventoryByCategory.map(c => c.stock),
+            backgroundColor: 'rgba(16,185,129,0.7)',
+            borderWidth: 1
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+    function renderSalesTable(data) {
+      const table = document.getElementById('salesTable');
+      if (!data || !data.recentSales || data.recentSales.length === 0) {
+        table.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-400">No data available</td></tr>';
+        return;
+      }
+      table.innerHTML = data.recentSales.map(sale => `
+        <tr>
+          <td class="py-2 px-3">${sale.date}</td>
+          <td class="py-2 px-3">${sale.product}</td>
+          <td class="py-2 px-3">${sale.quantity}</td>
+          <td class="py-2 px-3">$${sale.total.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+    async function loadReports() {
+      const data = await fetchReports();
+      renderSalesChart(data);
+      renderInventoryChart(data);
+      renderSalesTable(data);
+    }
+    window.addEventListener('DOMContentLoaded', loadReports);
+  </script>
+</body>
+</html>
