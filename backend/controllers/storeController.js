@@ -5,6 +5,7 @@
 // - Only processes and returns store data necessary for business operations.
 // - Does not return or log unnecessary or sensitive data.
 // - All endpoints are documented with their data processing purpose.
+import { storeContent } from '../services/vaultService.js';
 // Helper: check if user is global admin (assumes req.user.isAdmin is set by auth middleware)
 function isGlobalAdmin(req) {
     return req.user && req.user.isAdmin;
@@ -19,16 +20,22 @@ async function isStoreAdmin(userId, storeId) {
 // Assign a user to a store with a role
 export async function assignUserToStore(req, res) {
     try {
-        const { storeId, userId, role } = req.body;
+        const { storeId, userId, role, secret } = req.body;
         const tenantId = req.tenantId;
         // Only global admin or store admin can assign
         if (!isGlobalAdmin(req) && !(await isStoreAdmin(req.user.id, storeId))) {
             return res.status(403).json({ message: 'Forbidden' });
         }
+        // If a secret is provided, store it in Vault and save the path
+        let vaultSecretPath = null;
+        if (secret) {
+            const vaultRes = await storeContent(`/tenants/${tenantId}/stores/${storeId}/secret`, secret);
+            vaultSecretPath = vaultRes.data?.path || vaultRes.data?.id || null;
+        }
         const storeUser = await prisma.storeUser.upsert({
             where: { userId_storeId: { userId: Number(userId), storeId: Number(storeId) } },
-            update: { role },
-            create: { userId: Number(userId), storeId: Number(storeId), role, tenantId }
+            update: { role, vaultSecretPath },
+            create: { userId: Number(userId), storeId: Number(storeId), role, tenantId, vaultSecretPath }
         });
         logger.info({ event: 'STORE_USER_ASSIGNED', storeId, userId, role, tenantId });
         res.status(200).json(storeUser);

@@ -10,6 +10,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { generateKey, storeContent } from '../services/vaultService.js';
 import Joi from 'joi';
 import dayjs from 'dayjs';
 import { sendWhatsApp, sendEmail } from '../services/smsService.js';
@@ -209,11 +210,17 @@ const register = async (req, res) => {
             if (existingTenant) {
                 return res.status(400).json({ message: 'A business with this name already exists. Please choose a different name.' });
             }
-            // Transaction: create tenant and user atomically
+            // Transaction: create tenant, user, and Vault key atomically
             const result = await prisma.$transaction(async (tx) => {
                 const newTenant = await tx.tenant.create({ data: { name: tenantName } });
+                // Generate a Vault key for the tenant
+                const vaultKey = await generateKey(`tenant-${newTenant.id}`);
+                // Store the Vault key id/path in the tenant record
+                await tx.tenant.update({ where: { id: newTenant.id }, data: { vaultKeyId: vaultKey.data?.id || vaultKey.data?.keyId || vaultKey.data?.path || null } });
                 const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-                const user = await tx.user.create({ data: { email, password: hashed, role, tenantId: newTenant.id } });
+                // Generate a Vault key for the user
+                const userVaultKey = await generateKey(`user-${email}`);
+                const user = await tx.user.create({ data: { email, password: hashed, role, tenantId: newTenant.id, vaultKeyId: userVaultKey.data?.id || userVaultKey.data?.keyId || userVaultKey.data?.path || null } });
                 return { user, tenantId: newTenant.id };
             });
             assignedTenantId = result.tenantId;
@@ -223,7 +230,9 @@ const register = async (req, res) => {
             // Invited user: use provided tenantId
             assignedTenantId = tenantId;
             const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-            const user = await prisma.user.create({ data: { email, password: hashed, role, tenantId: assignedTenantId } });
+            // Generate a Vault key for the user
+            const userVaultKey = await generateKey(`user-${email}`);
+            const user = await prisma.user.create({ data: { email, password: hashed, role, tenantId: assignedTenantId, vaultKeyId: userVaultKey.data?.id || userVaultKey.data?.keyId || userVaultKey.data?.path || null } });
             logEvent('REGISTER_SUCCESS', { userId: user.id, email: maskEmail(email), tenantId: assignedTenantId });
             return res.status(201).json({ user: sanitizeUser(user) });
         } else {

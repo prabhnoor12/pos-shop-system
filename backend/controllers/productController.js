@@ -7,6 +7,7 @@
 // - All endpoints are documented with their data processing purpose.
 
 import { PrismaClient } from '@prisma/client';
+import { storeContent } from '../services/vaultService.js';
 import Joi from 'joi';
 import winston from 'winston';
 import * as productService from '../services/productService.js';
@@ -82,7 +83,13 @@ export async function createProduct(req, res) {
             logEvent('PRODUCT_CREATE_FAIL', { reason: 'Product SKU already exists', sku: value.sku, tenantId });
             return res.status(409).json({ message: 'Product SKU already exists.' });
         }
-        const product = await productService.createProduct({ ...value, tenantId });
+        // If sensitive product info provided, store in Vault and save path
+        let vaultDocPath = null;
+        if (value.sensitiveDoc) {
+            const vaultRes = await storeContent(`/tenants/${tenantId}/products/${value.sku}/doc`, value.sensitiveDoc);
+            vaultDocPath = vaultRes.data?.path || vaultRes.data?.id || null;
+        }
+        const product = await productService.createProduct({ ...value, tenantId, vaultDocPath });
         logEvent('PRODUCT_CREATE_SUCCESS', { id: product.id, sku: product.sku, tenantId });
         res.status(201).json(sanitizeProduct(product));
     } catch (err) {

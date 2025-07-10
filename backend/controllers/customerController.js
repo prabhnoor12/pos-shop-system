@@ -8,6 +8,7 @@
 // - All endpoints are documented with their data processing purpose.
 
 import { PrismaClient } from '@prisma/client';
+import { storeContent } from '../services/vaultService.js';
 import Joi from 'joi';
 import winston from 'winston';
 const prisma = new PrismaClient();
@@ -83,7 +84,13 @@ export async function createCustomer(req, res) {
             logEvent('CUSTOMER_CREATE_FAIL', { reason: 'Customer already exists', email: maskEmail(value.email), tenantId });
             return res.status(409).json({ message: 'Customer already exists.' });
         }
-        const customer = await prisma.customer.create({ data: { ...value, tenantId } });
+        // If sensitive notes or password provided, store in Vault and save path
+        let vaultNotePath = null;
+        if (value.note) {
+            const vaultRes = await storeContent(`/tenants/${tenantId}/customers/${value.email}/note`, value.note);
+            vaultNotePath = vaultRes.data?.path || vaultRes.data?.id || null;
+        }
+        const customer = await prisma.customer.create({ data: { ...value, tenantId, vaultNotePath } });
         logEvent('CUSTOMER_CREATE_SUCCESS', { id: customer.id, email: maskEmail(customer.email), tenantId });
         res.status(201).json(sanitizeCustomer(customer));
     } catch (err) {

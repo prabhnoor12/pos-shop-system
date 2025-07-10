@@ -116,6 +116,7 @@ import { authenticateToken } from './middleware/auth.middleware.js';
 import { tenantMiddleware } from './middleware/tenant.middleware.js';
 import { validateBody, validateQuery, validateParams } from './middleware/validation.middleware.js';
 import verifyEmailRoutes from './routes/verifyEmailRoutes.js';
+import vaultRoutes from './routes/vaultRoutes.js';
 
 // --- Multi-Tenancy: Enforce tenant context on all protected API routes ---
 // All /api routes except /auth and /health require tenant context
@@ -146,6 +147,7 @@ app.use('/api/consent', consentRoutes);
 app.use('/api/payment', paymentRoutes);
 // Register audit log API (admin only)
 app.use('/api/audit-logs', auditLogRoutes);
+app.use('/api/vault', vaultRoutes);
 // Centralized error handler (should be last)
 
 // Attach Sentry error handler before your own error handler
