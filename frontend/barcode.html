@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barcode Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    html, body {
+      height: 100%;
+    }
+    body {
+      background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+      min-height: 100vh;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .barcode-title {
+      color: #2563eb;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #e0e7ff;
+    }
+    #sidebarMenu {
+      min-width: 220px;
+      max-width: 260px;
+      background: #f1f5f9 !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(37,99,235,0.07);
+      z-index: 1040;
+    }
+    #sidebarMenu .nav-link.active {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff !important;
+      font-weight: 600;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #2563eb22;
+    }
+    #sidebarMenu .nav-link {
+      color: #2563eb;
+      transition: background 0.2s, color 0.2s;
+    }
+    #sidebarMenu .nav-link:hover {
+      background: #e0e7ff;
+      color: #1e293b;
+    }
+    .card {
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #2563eb11;
+      border: none;
+      transition: box-shadow 0.2s;
+    }
+    .card-header {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 18px 18px 0 0;
+      letter-spacing: 0.5px;
+    }
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: none;
+      transition: border 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px #2563eb22;
+    }
+    .btn-primary, .btn-success, .btn-warning {
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px #2563eb22;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+    }
+    .btn-success {
+      background: linear-gradient(90deg, #22c55e 60%, #4ade80 100%);
+    }
+    .btn-warning {
+      background: linear-gradient(90deg, #f59e42 60%, #fbbf24 100%);
+      color: #fff;
+    }
+    .btn:active, .btn:focus {
+      box-shadow: 0 0 0 2px #2563eb22 !important;
+    }
+    .input-group-text {
+      background: #e0e7ff;
+      border-radius: 8px 0 0 8px;
+      border: 1px solid #cbd5e1;
+    }
+    .alert {
+      border-radius: 8px;
+    }
+    .card-body {
+      background: #f8fafc;
+      border-radius: 0 0 18px 18px;
+    }
+    @media (max-width: 767.98px) {
+      #sidebarMenu {
+        min-width: 100%;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0 0 18px 18px;
+      }
+      #sidebarLinks.collapse:not(.show) {
+        display: none;
+      }
+    }
+    @media (min-width: 768px) {
+      #sidebarMenu {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      main.flex-grow-1 {
+        margin-left: 260px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .container.py-4 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="border-end p-3 flex-shrink-0">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <span class="fw-bold fs-4"><i class="fa-solid fa-cash-register me-2"></i>POS Menu</span>
+        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarLinks" aria-controls="sidebarLinks" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          <span class="visually-hidden">Toggle sidebar</span>
+        </button>
+      </div>
+      <div class="collapse d-md-block" id="sidebarLinks">
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item"><a class="nav-link" href="audit-log.html"><i class="fa-solid fa-clipboard-list me-2"></i>Audit Log</a></li>
+          <li class="nav-item"><a class="nav-link" href="auth.html"><i class="fa-solid fa-user-lock me-2"></i>Auth</a></li>
+          <li class="nav-item"><a class="nav-link active" href="barcode.html" aria-current="page"><i class="fa-solid fa-barcode me-2"></i>Barcode</a></li>
+          <li class="nav-item"><a class="nav-link" href="category.html"><i class="fa-solid fa-layer-group me-2"></i>Category</a></li>
+          <li class="nav-item"><a class="nav-link" href="consent.html"><i class="fa-solid fa-user-check me-2"></i>Consent</a></li>
+          <li class="nav-item"><a class="nav-link" href="customer.html"><i class="fa-solid fa-users me-2"></i>Customer</a></li>
+          <li class="nav-item"><a class="nav-link" href="display.html"><i class="fa-solid fa-tv me-2"></i>Display</a></li>
+          <li class="nav-item"><a class="nav-link" href="health.html"><i class="fa-solid fa-heartbeat me-2"></i>Health</a></li>
+          <li class="nav-item"><a class="nav-link" href="inventory.html"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory</a></li>
+          <li class="nav-item"><a class="nav-link" href="payment.html"><i class="fa-solid fa-credit-card me-2"></i>Payment</a></li>
+          <li class="nav-item"><a class="nav-link" href="pos.html"><i class="fa-solid fa-cash-register me-2"></i>POS</a></li>
+          <li class="nav-item"><a class="nav-link" href="product.html"><i class="fa-solid fa-box-open me-2"></i>Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="report.html"><i class="fa-solid fa-chart-line me-2"></i>Report</a></li>
+          <li class="nav-item"><a class="nav-link" href="sales.html"><i class="fa-solid fa-receipt me-2"></i>Sales</a></li>
+          <li class="nav-item"><a class="nav-link" href="store.html"><i class="fa-solid fa-store me-2"></i>Store</a></li>
+          <li class="nav-item"><a class="nav-link" href="supplier.html"><i class="fa-solid fa-truck me-2"></i>Supplier</a></li>
+          <li class="nav-item"><a class="nav-link" href="user.html"><i class="fa-solid fa-user me-2"></i>User</a></li>
+          <li class="nav-item"><a class="nav-link" href="weight.html"><i class="fa-solid fa-weight me-2"></i>Weight</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Main content -->
+    <main class="flex-grow-1">
+      <div class="container py-4">
+        <h1 class="mb-5 text-center display-5 fw-bold barcode-title"><i class="fa-solid fa-barcode me-2"></i>Barcode Management</h1>
+        <div class="row g-4">
+          <!-- Generate Barcode -->
+          <div class="col-lg-6 col-md-12">
+            <div class="card h-100">
+              <div class="card-header"><i class="fa-solid fa-plus me-2"></i>Generate Barcode</div>
+              <div class="card-body">
+                <form id="generateForm">
+                  <div class="mb-3">
+                    <label for="barcodeData" class="form-label">Data</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-font"></i></span>
+                      <input type="text" class="form-control" id="barcodeData" name="data" required placeholder="Enter data for barcode">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="barcodeType" class="form-label">Barcode Type</label>
+                    <select class="form-select" id="barcodeType" name="bcid">
+                      <option value="code128">Code 128</option>
+                      <option value="ean13">EAN-13</option>
+                      <option value="ean8">EAN-8</option>
+                      <option value="upc">UPC</option>
+                      <option value="qrcode">QR Code</option>
+                      <option value="pdf417">PDF417</option>
+                      <option value="datamatrix">Data Matrix</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="barcodeFormat" class="form-label">Format</label>
+                    <select class="form-select" id="barcodeFormat" name="format">
+                      <option value="png">PNG</option>
+                      <option value="svg">SVG</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 row g-2">
+                    <div class="col">
+                      <label for="barcodeScale" class="form-label">Scale</label>
+                      <input type="number" class="form-control" id="barcodeScale" name="scale" min="1" value="3">
+                    </div>
+                    <div class="col">
+                      <label for="barcodeHeight" class="form-label">Height</label>
+                      <input type="number" class="form-control" id="barcodeHeight" name="height" min="1" value="10">
+                    </div>
+                    <div class="col">
+                      <label for="barcodeWidth" class="form-label">Width (optional)</label>
+                      <input type="number" class="form-control" id="barcodeWidth" name="width">
+                    </div>
+                  </div>
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="barcodeIncludeText" name="includetext" checked>
+                    <label class="form-check-label" for="barcodeIncludeText">Include Text</label>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-barcode me-2"></i>Generate</button>
+                </form>
+                <div id="barcodeResult" class="mt-3"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Scan Barcode -->
+          <div class="col-lg-6 col-md-12">
+            <div class="card h-100">
+              <div class="card-header"><i class="fa-solid fa-qrcode me-2"></i>Scan Barcode</div>
+              <div class="card-body">
+                <form id="scanForm" enctype="multipart/form-data">
+                  <div class="mb-3">
+                    <label for="barcodeImage" class="form-label">Upload Image</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                      <input type="file" class="form-control" id="barcodeImage" name="image" accept="image/*" required>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-success w-100"><i class="fa-solid fa-search me-2"></i>Scan</button>
+                </form>
+                <div id="scanResult" class="mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Validate Barcode Format -->
+        <div class="row g-4 mt-1">
+          <div class="col-lg-6 col-md-12">
+            <div class="card h-100">
+              <div class="card-header"><i class="fa-solid fa-check-double me-2"></i>Validate Barcode Format</div>
+              <div class="card-body">
+                <form id="validateForm">
+                  <div class="mb-3">
+                    <label for="validateFormatType" class="form-label">Barcode Type</label>
+                    <select class="form-select" id="validateFormatType" name="format" required>
+                      <option value="code128">Code 128</option>
+                      <option value="ean13">EAN-13</option>
+                      <option value="ean8">EAN-8</option>
+                      <option value="upc">UPC</option>
+                      <option value="qrcode">QR Code</option>
+                      <option value="pdf417">PDF417</option>
+                      <option value="datamatrix">Data Matrix</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-warning w-100"><i class="fa-solid fa-check me-2"></i>Validate</button>
+                </form>
+                <div id="validateResult" class="mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Highlight current page in sidebar
+    (() => {
+      const links = document.querySelectorAll('#sidebarMenu .nav-link');
+      links.forEach(link => {
+        if (window.location.pathname.endsWith(link.getAttribute('href'))) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    })();
+
+    // Adjust the API base URL as needed
+    const API_BASE = '/barcode';
+
+    // Generate Barcode
+    document.getElementById('generateForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const data = document.getElementById('barcodeData').value;
+      const bcid = document.getElementById('barcodeType').value;
+      const format = document.getElementById('barcodeFormat').value;
+      const scale = parseInt(document.getElementById('barcodeScale').value) || 3;
+      const height = parseInt(document.getElementById('barcodeHeight').value) || 10;
+      const width = parseInt(document.getElementById('barcodeWidth').value) || undefined;
+      const includetext = document.getElementById('barcodeIncludeText').checked;
+      const resultDiv = document.getElementById('barcodeResult');
+      resultDiv.innerHTML = 'Generating...';
+      const payload = { data, bcid, format, scale, height, includetext };
+      if (width) payload.width = width;
+      try {
+        const res = await fetch(`${API_BASE}/generate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': 'Bearer <token>' // Uncomment and set token if needed
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          resultDiv.innerHTML = `<div class="alert alert-danger">${err.message || 'Error generating barcode'}</div>`;
+          return;
+        }
+        if (format === 'svg') {
+          const svg = await res.text();
+          resultDiv.innerHTML = svg;
+        } else {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          resultDiv.innerHTML = `<img src="${url}" alt="Barcode" class="img-fluid" />`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      }
+    });
+
+    // Scan Barcode
+    document.getElementById('scanForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('barcodeImage');
+      const resultDiv = document.getElementById('scanResult');
+      resultDiv.innerHTML = 'Scanning...';
+      if (!fileInput.files.length) {
+        resultDiv.innerHTML = '<div class="alert alert-danger">Please select an image file.</div>';
+        return;
+      }
+      const formData = new FormData();
+      formData.append('image', fileInput.files[0]);
+      try {
+        const res = await fetch(`${API_BASE}/scan`, {
+          method: 'POST',
+          // headers: { 'Authorization': 'Bearer <token>' }, // Uncomment if needed
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error scanning barcode'}</div>`;
+        } else {
+          // If backend returns barcode type, show it
+          if (data.text && data.type) {
+            resultDiv.innerHTML = `<div class="alert alert-success">Barcode Text: <strong>${data.text}</strong><br>Type: <strong>${data.type}</strong></div>`;
+          } else if (data.text) {
+            resultDiv.innerHTML = `<div class="alert alert-success">Barcode Text: <strong>${data.text}</strong></div>`;
+          } else {
+            resultDiv.innerHTML = `<div class="alert alert-warning">No barcode found.</div>`;
+          }
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      }
+    });
+
+    // Validate Barcode Format
+    document.getElementById('validateForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const format = document.getElementById('validateFormatType').value;
+      const resultDiv = document.getElementById('validateResult');
+      resultDiv.innerHTML = 'Validating...';
+      try {
+        const res = await fetch(`${API_BASE}/validate-format?format=${encodeURIComponent(format)}`, {
+          method: 'GET',
+          // headers: { 'Authorization': 'Bearer <token>' }, // Uncomment if needed
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Validation error'}</div>`;
+        } else {
+          resultDiv.innerHTML = data.valid
+            ? `<div class="alert alert-success">Format is valid.</div>`
+            : `<div class="alert alert-warning">Format is invalid.</div>`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      }
+    });
+  </script>
+  <style>
+    @media (max-width: 767.98px) {
+      #sidebarMenu {
+        min-width: 100%;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+      }
+      #sidebarLinks.collapse:not(.show) {
+        display: none;
+      }
+    }
+    @media (min-width: 768px) {
+      #sidebarMenu {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+      }
+      main.flex-grow-1 {
+        margin-left: 260px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .container.py-4 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</body>
+</html>

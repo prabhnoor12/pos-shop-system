@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventory Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body { height: 100%; }
+    body {
+      background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+      min-height: 100vh;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #sidebarMenu {
+      min-width: 220px;
+      max-width: 260px;
+      background: #f1f5f9 !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(37,99,235,0.07);
+      z-index: 1040;
+    }
+    #sidebarMenu .nav-link.active {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff !important;
+      font-weight: 600;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #2563eb22;
+    }
+    #sidebarMenu .nav-link {
+      color: #2563eb;
+      transition: background 0.2s, color 0.2s;
+    }
+    #sidebarMenu .nav-link:hover {
+      background: #e0e7ff;
+      color: #1e293b;
+    }
+    .card {
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #2563eb11;
+      border: none;
+      transition: box-shadow 0.2s;
+    }
+    .card-header {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 18px 18px 0 0;
+      letter-spacing: 0.5px;
+    }
+    .card-title {
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .result {
+      background: #f1f5f9;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+      min-height: 2.5rem;
+      font-size: 1rem;
+    }
+    .btn-primary, .btn-secondary, .btn-warning, .btn-danger {
+      border-radius: 2rem;
+      font-weight: 500;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #334155;
+    }
+    .form-control:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.2rem rgba(37,99,235,.15);
+    }
+    .card-body {
+      background: #fff;
+      border-radius: 0 0 18px 18px;
+    }
+    .mb-4 {
+      margin-bottom: 2rem !important;
+    }
+    .mb-3 {
+      margin-bottom: 1.25rem !important;
+    }
+    .container {
+      max-width: 1100px;
+    }
+    .text-center {
+      letter-spacing: 1px;
+    }
+    @media (max-width: 767.98px) {
+      #sidebarMenu {
+        min-width: 100%;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0 0 18px 18px;
+      }
+      #sidebarLinks.collapse:not(.show) {
+        display: none;
+      }
+    }
+    @media (min-width: 768px) {
+      #sidebarMenu {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      main.flex-grow-1 {
+        margin-left: 260px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .container.py-4 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="d-flex flex-column flex-md-row min-vh-100">
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="border-end p-3 flex-shrink-0">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <span class="fw-bold fs-4"><i class="fa-solid fa-cash-register me-2"></i>POS Menu</span>
+        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarLinks" aria-controls="sidebarLinks" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          <span class="visually-hidden">Toggle sidebar</span>
+        </button>
+      </div>
+      <div class="collapse d-md-block" id="sidebarLinks">
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item"><a class="nav-link" href="audit-log.html"><i class="fa-solid fa-clipboard-list me-2"></i>Audit Log</a></li>
+          <li class="nav-item"><a class="nav-link" href="auth.html"><i class="fa-solid fa-user-lock me-2"></i>Auth</a></li>
+          <li class="nav-item"><a class="nav-link" href="barcode.html"><i class="fa-solid fa-barcode me-2"></i>Barcode</a></li>
+          <li class="nav-item"><a class="nav-link" href="category.html"><i class="fa-solid fa-layer-group me-2"></i>Category</a></li>
+          <li class="nav-item"><a class="nav-link" href="consent.html"><i class="fa-solid fa-user-check me-2"></i>Consent</a></li>
+          <li class="nav-item"><a class="nav-link" href="customer.html"><i class="fa-solid fa-users me-2"></i>Customer</a></li>
+          <li class="nav-item"><a class="nav-link" href="display.html"><i class="fa-solid fa-tv me-2"></i>Display</a></li>
+          <li class="nav-item"><a class="nav-link" href="health.html"><i class="fa-solid fa-heartbeat me-2"></i>Health</a></li>
+          <li class="nav-item"><a class="nav-link active" href="inventory.html" aria-current="page"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory</a></li>
+          <li class="nav-item"><a class="nav-link" href="payment.html"><i class="fa-solid fa-credit-card me-2"></i>Payment</a></li>
+          <li class="nav-item"><a class="nav-link" href="pos.html"><i class="fa-solid fa-cash-register me-2"></i>POS</a></li>
+          <li class="nav-item"><a class="nav-link" href="product.html"><i class="fa-solid fa-box-open me-2"></i>Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="report.html"><i class="fa-solid fa-chart-line me-2"></i>Report</a></li>
+          <li class="nav-item"><a class="nav-link" href="sales.html"><i class="fa-solid fa-receipt me-2"></i>Sales</a></li>
+          <li class="nav-item"><a class="nav-link" href="store.html"><i class="fa-solid fa-store me-2"></i>Store</a></li>
+          <li class="nav-item"><a class="nav-link" href="supplier.html"><i class="fa-solid fa-truck me-2"></i>Supplier</a></li>
+          <li class="nav-item"><a class="nav-link" href="user.html"><i class="fa-solid fa-user me-2"></i>User</a></li>
+          <li class="nav-item"><a class="nav-link" href="weight.html"><i class="fa-solid fa-weight me-2"></i>Weight</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Main content -->
+    <main class="flex-grow-1">
+      <div class="container py-4">
+        <h1 class="mb-4 text-center display-5 fw-bold health-title"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory Management</h1>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <!-- Offline Sync Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-arrow-rotate-right me-2"></i>Offline Sync</div>
+              <div class="card-body">
+                <form onsubmit="syncSales(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Sales Data (JSON):</label>
+                    <textarea class="form-control" name="sales" required rows="3" placeholder="Enter sales data in JSON format" title="Sales Data (JSON)"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload me-1"></i>Sync Sales</button>
+                </form>
+                <form onsubmit="syncInventory(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Inventory Data (JSON):</label>
+                    <textarea class="form-control" name="inventory" required rows="3" placeholder="Enter inventory data in JSON format" title="Inventory Data (JSON)"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload me-1"></i>Sync Inventory</button>
+                </form>
+                <div id="syncResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- Registers Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-person-booth me-2"></i>Registers</div>
+              <div class="card-body">
+                <button class="btn btn-secondary mb-2" onclick="listRegisters()"><i class="fa-solid fa-list-ul me-1"></i>List Registers</button>
+                <form onsubmit="createRegister(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Register Name:</label>
+                    <input class="form-control" name="name" required placeholder="Register Name" title="Register Name">
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus-circle me-1"></i>Create Register</button>
+                </form>
+                <div id="registersResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- Warehouses Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-warehouse me-2"></i>Warehouses</div>
+              <div class="card-body">
+                <button class="btn btn-secondary mb-2" onclick="listWarehouses()"><i class="fa-solid fa-list me-1"></i>List Warehouses</button>
+                <div id="warehousesResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- Stock Movement History Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-clock-rotate-left me-2"></i>Stock Movement History</div>
+              <div class="card-body">
+                <button class="btn btn-secondary mb-2" onclick="getStockHistory()"><i class="fa-solid fa-clock me-1"></i>Get Stock Movement History</button>
+                <div id="stockHistoryResult" class="result mt-3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- Inventory Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory</div>
+              <div class="card-body">
+                <button class="btn btn-secondary mb-2" onclick="getInventory()"><i class="fa-solid fa-eye me-1"></i>View All Inventory</button>
+                <form onsubmit="addInventory(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Product ID:</label>
+                    <input class="form-control" name="productId" required placeholder="Product ID" title="Product ID">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Quantity:</label>
+                    <input class="form-control" name="quantity" type="number" required placeholder="Quantity" title="Quantity">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Location:</label>
+                    <input class="form-control" name="location" placeholder="Location" title="Location">
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus-circle me-1"></i>Add Inventory</button>
+                </form>
+                <form onsubmit="updateInventory(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Inventory ID:</label>
+                    <input class="form-control" name="id" required placeholder="Inventory ID" title="Inventory ID">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Quantity:</label>
+                    <input class="form-control" name="quantity" type="number" placeholder="Quantity" title="Quantity">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Location:</label>
+                    <input class="form-control" name="location" placeholder="Location" title="Location">
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-rotate-right me-1"></i>Update Inventory</button>
+                </form>
+                <form onsubmit="batchUpdateInventory(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Batch (JSON array):</label>
+                    <textarea class="form-control" name="batch" required rows="3" placeholder='[{"productId":1,"quantity":10}]' title="Batch JSON Array"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-rotate-right me-1"></i>Batch Update</button>
+                </form>
+                <div id="inventoryResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- Stock Transfer Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Stock Transfer</div>
+              <div class="card-body">
+                <form onsubmit="transferStock(event)">
+                  <div class="mb-3">
+                    <label class="form-label">From Location:</label>
+                    <input class="form-control" name="fromLocation" required placeholder="From Location" title="From Location">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">To Location:</label>
+                    <input class="form-control" name="toLocation" required placeholder="To Location" title="To Location">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Product ID:</label>
+                    <input class="form-control" name="productId" required placeholder="Product ID" title="Product ID">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Quantity:</label>
+                    <input class="form-control" name="quantity" type="number" required placeholder="Quantity" title="Quantity">
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-right-arrow-left me-1"></i>Transfer Stock</button>
+                </form>
+                <div id="transferResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- Batch/Serial Numbers Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-barcode me-2"></i>Batch/Serial Numbers</div>
+              <div class="card-body">
+                <form onsubmit="addBatchSerial(event)">
+                  <div class="mb-3">
+                    <label class="form-label">Product ID:</label>
+                    <input class="form-control" name="productId" required placeholder="Product ID" title="Product ID">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Batch Number:</label>
+                    <input class="form-control" name="batchNumber" placeholder="Batch Number" title="Batch Number">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Serial Number:</label>
+                    <input class="form-control" name="serialNumber" placeholder="Serial Number" title="Serial Number">
+                  </div>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus-circle me-1"></i>Add Batch/Serial</button>
+                </form>
+                <div id="batchSerialResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- Alerts Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-triangle-exclamation me-2"></i>Alerts</div>
+              <div class="card-body">
+                <button class="btn btn-warning mb-2" onclick="getLowStockAlerts()"><i class="fa-solid fa-exclamation-circle me-1"></i>Low Stock Alerts</button>
+                <button class="btn btn-danger mb-2" onclick="getExpiringProducts()"><i class="fa-solid fa-calendar-xmark me-1"></i>Expiring Product Alerts</button>
+                <div id="alertsResult" class="result mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    async function syncSales(e) {
+      e.preventDefault();
+      const form = e.target;
+      let sales;
+      try { sales = JSON.parse(form.sales.value); } catch { sales = {}; }
+      const res = await fetch('/api/inventory/sync/sales', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sales)
+      });
+      document.getElementById('syncResult').textContent = await res.text();
+    }
+    async function syncInventory(e) {
+      e.preventDefault();
+      const form = e.target;
+      let inventory;
+      try { inventory = JSON.parse(form.inventory.value); } catch { inventory = {}; }
+      const res = await fetch('/api/inventory/sync/inventory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inventory)
+      });
+      document.getElementById('syncResult').textContent = await res.text();
+    }
+    // Example fetch functions (replace URLs with your backend endpoints)
+    async function listRegisters() {
+      const res = await fetch('/api/inventory/registers');
+      document.getElementById('registersResult').textContent = await res.text();
+    }
+    async function createRegister(e) {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch('/api/inventory/registers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name.value })
+      });
+      document.getElementById('registersResult').textContent = await res.text();
+    }
+    async function getInventory() {
+      const res = await fetch('/api/inventory');
+      document.getElementById('inventoryResult').textContent = await res.text();
+    }
+    async function addInventory(e) {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch('/api/inventory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: form.productId.value,
+          quantity: Number(form.quantity.value),
+          location: form.location.value
+        })
+      });
+      document.getElementById('inventoryResult').textContent = await res.text();
+    }
+    async function updateInventory(e) {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch(`/api/inventory/${form.id.value}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          quantity: form.quantity.value ? Number(form.quantity.value) : undefined,
+          location: form.location.value
+        })
+      });
+      document.getElementById('inventoryResult').textContent = await res.text();
+    }
+    async function batchUpdateInventory(e) {
+      e.preventDefault();
+      const form = e.target;
+      let batch;
+      try { batch = JSON.parse(form.batch.value); } catch { batch = []; }
+      const res = await fetch('/api/inventory/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(batch)
+      });
+      document.getElementById('inventoryResult').textContent = await res.text();
+    }
+    async function listWarehouses() {
+      const res = await fetch('/api/inventory/warehouses');
+      document.getElementById('warehousesResult').textContent = await res.text();
+    }
+    async function transferStock(e) {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch('/api/inventory/stock/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fromLocation: form.fromLocation.value,
+          toLocation: form.toLocation.value,
+          productId: form.productId.value,
+          quantity: Number(form.quantity.value)
+        })
+      });
+      document.getElementById('transferResult').textContent = await res.text();
+    }
+    async function addBatchSerial(e) {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch('/api/inventory/batch-serial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: form.productId.value,
+          batchNumber: form.batchNumber.value,
+          serialNumber: form.serialNumber.value
+        })
+      });
+      document.getElementById('batchSerialResult').textContent = await res.text();
+    }
+    async function getStockHistory() {
+      const res = await fetch('/api/inventory/stock/history');
+      document.getElementById('stockHistoryResult').textContent = await res.text();
+    }
+    async function getLowStockAlerts() {
+      const res = await fetch('/api/inventory/stock/low');
+      document.getElementById('alertsResult').textContent = await res.text();
+    }
+    async function getExpiringProducts() {
+      const res = await fetch('/api/inventory/stock/expiring');
+      document.getElementById('alertsResult').textContent = await res.text();
+    }
+  </script>
+</body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</html>

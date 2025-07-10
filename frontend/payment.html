@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    html, body { height: 100%; }
+    body {
+      background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+      min-height: 100vh;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #sidebarMenu {
+      min-width: 220px;
+      max-width: 260px;
+      background: #f1f5f9 !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(37,99,235,0.07);
+      z-index: 1040;
+    }
+    #sidebarMenu .nav-link.active {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff !important;
+      font-weight: 600;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #2563eb22;
+    }
+    #sidebarMenu .nav-link {
+      color: #2563eb;
+      transition: background 0.2s, color 0.2s;
+    }
+    #sidebarMenu .nav-link:hover {
+      background: #e0e7ff;
+      color: #1e293b;
+    }
+    .card {
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #2563eb11;
+      border: none;
+      transition: box-shadow 0.2s;
+    }
+    .card-header {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 18px 18px 0 0;
+      letter-spacing: 0.5px;
+    }
+    .payment-title {
+      color: #2563eb;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #e0e7ff;
+    }
+    .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+      border-radius: 2rem;
+      font-weight: 500;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #334155;
+    }
+    .form-control:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.2rem rgba(37,99,235,.15);
+    }
+    .card-body {
+      background: #fff;
+      border-radius: 0 0 18px 18px;
+    }
+    .result {
+      background: #f1f5f9;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+      min-height: 2.5rem;
+      font-size: 1rem;
+    }
+    @media (max-width: 767.98px) {
+      #sidebarMenu {
+        min-width: 100%;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0 0 18px 18px;
+      }
+      #sidebarLinks.collapse:not(.show) {
+        display: none;
+      }
+    }
+    @media (min-width: 768px) {
+      #sidebarMenu {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      main.flex-grow-1 {
+        margin-left: 260px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .container.py-4 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex flex-column flex-md-row min-vh-100">
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="border-end p-3 flex-shrink-0">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <span class="fw-bold fs-4"><i class="fa-solid fa-cash-register me-2"></i>POS Menu</span>
+        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarLinks" aria-controls="sidebarLinks" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          <span class="visually-hidden">Toggle sidebar</span>
+        </button>
+      </div>
+      <div class="collapse d-md-block" id="sidebarLinks">
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item"><a class="nav-link" href="audit-log.html"><i class="fa-solid fa-clipboard-list me-2"></i>Audit Log</a></li>
+          <li class="nav-item"><a class="nav-link" href="auth.html"><i class="fa-solid fa-user-lock me-2"></i>Auth</a></li>
+          <li class="nav-item"><a class="nav-link" href="barcode.html"><i class="fa-solid fa-barcode me-2"></i>Barcode</a></li>
+          <li class="nav-item"><a class="nav-link" href="category.html"><i class="fa-solid fa-layer-group me-2"></i>Category</a></li>
+          <li class="nav-item"><a class="nav-link" href="consent.html"><i class="fa-solid fa-user-check me-2"></i>Consent</a></li>
+          <li class="nav-item"><a class="nav-link" href="customer.html"><i class="fa-solid fa-users me-2"></i>Customer</a></li>
+          <li class="nav-item"><a class="nav-link" href="display.html"><i class="fa-solid fa-tv me-2"></i>Display</a></li>
+          <li class="nav-item"><a class="nav-link" href="health.html"><i class="fa-solid fa-heartbeat me-2"></i>Health</a></li>
+          <li class="nav-item"><a class="nav-link" href="inventory.html"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory</a></li>
+          <li class="nav-item"><a class="nav-link active" href="payment.html" aria-current="page"><i class="fa-solid fa-credit-card me-2"></i>Payment</a></li>
+          <li class="nav-item"><a class="nav-link" href="pos.html"><i class="fa-solid fa-cash-register me-2"></i>POS</a></li>
+          <li class="nav-item"><a class="nav-link" href="product.html"><i class="fa-solid fa-box-open me-2"></i>Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="report.html"><i class="fa-solid fa-chart-line me-2"></i>Report</a></li>
+          <li class="nav-item"><a class="nav-link" href="sales.html"><i class="fa-solid fa-receipt me-2"></i>Sales</a></li>
+          <li class="nav-item"><a class="nav-link" href="store.html"><i class="fa-solid fa-store me-2"></i>Store</a></li>
+          <li class="nav-item"><a class="nav-link" href="supplier.html"><i class="fa-solid fa-truck me-2"></i>Supplier</a></li>
+          <li class="nav-item"><a class="nav-link" href="user.html"><i class="fa-solid fa-user me-2"></i>User</a></li>
+          <li class="nav-item"><a class="nav-link" href="weight.html"><i class="fa-solid fa-weight me-2"></i>Weight</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Main content -->
+    <main class="flex-grow-1">
+      <div class="container py-4">
+        <h1 class="mb-4 text-center display-5 fw-bold payment-title"><i class="fa-solid fa-credit-card me-2"></i>Payment Management</h1>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <!-- Square Payment Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-brands fa-cc-visa me-2"></i>Square Payment</div>
+              <div class="card-body">
+                <form id="squareForm">
+                  <div class="mb-3">
+                    <label class="form-label">Amount</label>
+                    <input class="form-control" name="amount" type="number" min="0.01" step="0.01" required placeholder="Amount">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Currency</label>
+                    <input class="form-control" name="currency" maxlength="3" required placeholder="e.g. USD">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Source ID</label>
+                    <input class="form-control" name="sourceId" required placeholder="Source ID (token)">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Note</label>
+                    <input class="form-control" name="note" placeholder="Optional note">
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-credit-card me-1"></i>Pay with Square</button>
+                </form>
+                <div id="squareResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- PayPal Payment Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-brands fa-paypal me-2"></i>PayPal Payment</div>
+              <div class="card-body">
+                <form id="paypalForm">
+                  <div class="mb-3">
+                    <label class="form-label">Amount</label>
+                    <input class="form-control" name="amount" type="number" min="0.01" step="0.01" required placeholder="Amount">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Currency</label>
+                    <input class="form-control" name="currency" maxlength="3" required placeholder="e.g. USD">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <input class="form-control" name="description" placeholder="Optional description">
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100"><i class="fa-brands fa-paypal me-1"></i>Create PayPal Order</button>
+                </form>
+                <div id="paypalResult" class="result mt-3"></div>
+              </div>
+            </div>
+            <!-- PayPal Capture Card -->
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-brands fa-paypal me-2"></i>Capture PayPal Order</div>
+              <div class="card-body">
+                <form id="paypalCaptureForm">
+                  <div class="mb-3">
+                    <label class="form-label">Order ID</label>
+                    <input class="form-control" name="orderId" required placeholder="PayPal Order ID">
+                  </div>
+                  <button type="submit" class="btn btn-success w-100"><i class="fa-solid fa-check-circle me-1"></i>Capture Order</button>
+                </form>
+                <div id="paypalCaptureResult" class="result mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Square Payment
+    document.getElementById('squareForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        amount: Number(form.amount.value),
+        currency: form.currency.value,
+        sourceId: form.sourceId.value,
+        note: form.note.value
+      };
+      const res = await fetch('/payment/square/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      document.getElementById('squareResult').textContent = await res.text();
+    });
+    // PayPal Payment
+    document.getElementById('paypalForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        amount: Number(form.amount.value),
+        currency: form.currency.value,
+        description: form.description.value
+      };
+      const res = await fetch('/payment/paypal/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      let html = '';
+      if (result.orderId) {
+        html += `<div><strong>Order ID:</strong> ${result.orderId}</div>`;
+        if (result.approveUrl) {
+          html += `<div class='mt-2'><a href='${result.approveUrl}' target='_blank' class='btn btn-success'><i class='fa-brands fa-paypal me-1'></i>Approve Payment</a></div>`;
+        }
+      } else {
+        html = JSON.stringify(result);
+      }
+      document.getElementById('paypalResult').innerHTML = html;
+    });
+    // PayPal Capture
+    document.getElementById('paypalCaptureForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = { orderId: form.orderId.value };
+      const res = await fetch('/payment/paypal/capture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      document.getElementById('paypalCaptureResult').textContent = await res.text();
+    });
+  </script>
+</body>
+</html>

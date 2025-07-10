@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Display Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body { height: 100%; }
+    body {
+      background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+      min-height: 100vh;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .display-title {
+      color: #2563eb;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #e0e7ff;
+    }
+    #sidebarMenu {
+      min-width: 220px;
+      max-width: 260px;
+      background: #f1f5f9 !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(37,99,235,0.07);
+      z-index: 1040;
+    }
+    #sidebarMenu .nav-link.active {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff !important;
+      font-weight: 600;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #2563eb22;
+    }
+    #sidebarMenu .nav-link {
+      color: #2563eb;
+      transition: background 0.2s, color 0.2s;
+    }
+    #sidebarMenu .nav-link:hover {
+      background: #e0e7ff;
+      color: #1e293b;
+    }
+    .card {
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #2563eb11;
+      border: none;
+      transition: box-shadow 0.2s;
+    }
+    .card-header {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 18px 18px 0 0;
+      letter-spacing: 0.5px;
+    }
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: none;
+      transition: border 0.2s;
+    }
+    .form-control:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px #2563eb22;
+    }
+    .btn-primary, .btn-success, .btn-warning {
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px #2563eb22;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+    }
+    .btn-success {
+      background: linear-gradient(90deg, #22c55e 60%, #4ade80 100%);
+    }
+    .btn-warning {
+      background: linear-gradient(90deg, #f59e42 60%, #fbbf24 100%);
+      color: #fff;
+    }
+    .btn:active, .btn:focus {
+      box-shadow: 0 0 0 2px #2563eb22 !important;
+    }
+    .alert {
+      border-radius: 8px;
+    }
+    .card-body {
+      background: #f8fafc;
+      border-radius: 0 0 18px 18px;
+    }
+    @media (max-width: 767.98px) {
+      #sidebarMenu {
+        min-width: 100%;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0 0 18px 18px;
+      }
+      #sidebarLinks.collapse:not(.show) {
+        display: none;
+      }
+    }
+    @media (min-width: 768px) {
+      #sidebarMenu {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      main.flex-grow-1 {
+        margin-left: 260px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .container.py-4 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex flex-column flex-md-row min-vh-100">
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="border-end p-3 flex-shrink-0">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <span class="fw-bold fs-4"><i class="fa-solid fa-cash-register me-2"></i>POS Menu</span>
+        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarLinks" aria-controls="sidebarLinks" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          <span class="visually-hidden">Toggle sidebar</span>
+        </button>
+      </div>
+      <div class="collapse d-md-block" id="sidebarLinks">
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item"><a class="nav-link" href="audit-log.html"><i class="fa-solid fa-clipboard-list me-2"></i>Audit Log</a></li>
+          <li class="nav-item"><a class="nav-link" href="auth.html"><i class="fa-solid fa-user-lock me-2"></i>Auth</a></li>
+          <li class="nav-item"><a class="nav-link" href="barcode.html"><i class="fa-solid fa-barcode me-2"></i>Barcode</a></li>
+          <li class="nav-item"><a class="nav-link" href="category.html"><i class="fa-solid fa-layer-group me-2"></i>Category</a></li>
+          <li class="nav-item"><a class="nav-link" href="consent.html"><i class="fa-solid fa-user-check me-2"></i>Consent</a></li>
+          <li class="nav-item"><a class="nav-link" href="customer.html"><i class="fa-solid fa-users me-2"></i>Customer</a></li>
+          <li class="nav-item"><a class="nav-link active" href="display.html" aria-current="page"><i class="fa-solid fa-tv me-2"></i>Display</a></li>
+          <li class="nav-item"><a class="nav-link" href="health.html"><i class="fa-solid fa-heartbeat me-2"></i>Health</a></li>
+          <li class="nav-item"><a class="nav-link" href="inventory.html"><i class="fa-solid fa-boxes-stacked me-2"></i>Inventory</a></li>
+          <li class="nav-item"><a class="nav-link" href="payment.html"><i class="fa-solid fa-credit-card me-2"></i>Payment</a></li>
+          <li class="nav-item"><a class="nav-link" href="pos.html"><i class="fa-solid fa-cash-register me-2"></i>POS</a></li>
+          <li class="nav-item"><a class="nav-link" href="product.html"><i class="fa-solid fa-box-open me-2"></i>Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="report.html"><i class="fa-solid fa-chart-line me-2"></i>Report</a></li>
+          <li class="nav-item"><a class="nav-link" href="sales.html"><i class="fa-solid fa-receipt me-2"></i>Sales</a></li>
+          <li class="nav-item"><a class="nav-link" href="store.html"><i class="fa-solid fa-store me-2"></i>Store</a></li>
+          <li class="nav-item"><a class="nav-link" href="supplier.html"><i class="fa-solid fa-truck me-2"></i>Supplier</a></li>
+          <li class="nav-item"><a class="nav-link" href="user.html"><i class="fa-solid fa-user me-2"></i>User</a></li>
+          <li class="nav-item"><a class="nav-link" href="weight.html"><i class="fa-solid fa-weight me-2"></i>Weight</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Main content -->
+    <main class="flex-grow-1">
+      <div class="container py-4">
+        <h1 class="mb-4 text-center display-5 fw-bold display-title"><i class="fa-solid fa-tv me-2"></i>Display Management</h1>
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-6 col-md-10">
+            <div class="card mb-4">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-pen-to-square me-2"></i>Show Text on Display</span>
+                <button class="btn btn-outline-secondary btn-sm" id="quickTemplatesBtn" title="Quick Templates"><i class="fa-solid fa-bolt"></i></button>
+              </div>
+              <div class="card-body">
+                <form id="showTextForm">
+                  <div class="mb-3">
+                    <label for="line1" class="form-label">Line 1</label>
+                    <input type="text" class="form-control" id="line1" maxlength="20" placeholder="First line (max 20 chars)">
+                  </div>
+                  <div class="mb-3">
+                    <label for="line2" class="form-label">Line 2</label>
+                    <input type="text" class="form-control" id="line2" maxlength="20" placeholder="Second line (max 20 chars)">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Font Size</label>
+                    <select title="hell" class="form-select" id="fontSizeSelect">
+                      <option value="normal">Normal</option>
+                      <option value="large">Large</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="scrollText">
+                    <label class="form-check-label" for="scrollText">Scroll if too long</label>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-eye me-2"></i>Show on Display</button>
+                </form>
+                <div id="showTextResult" class="mt-3"></div>
+                <div  class="dropdown mt-2" id="templatesDropdown" style="display:none;">
+                  <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="templatesMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    Quick Templates
+                  </button>
+                  <ul class="dropdown-menu w-100" aria-labelledby="templatesMenuBtn" id="templatesMenu">
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4">
+              <div class="card-header"><i class="fa-solid fa-clock-rotate-left me-2"></i>Recent Messages</div>
+              <div class="card-body">
+                <ul class="list-group" id="recentMessagesList"></ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><i class="fa-solid fa-eraser me-2"></i>Clear Display</div>
+              <div class="card-body">
+                <button class="btn btn-warning w-100" id="clearDisplayBtn"><i class="fa-solid fa-trash me-2"></i>Clear Display</button>
+                <div id="clearDisplayResult" class="mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // --- Advanced Display Features ---
+    const templates = [
+      { line1: 'Welcome!', line2: 'Enjoy shopping!' },
+      { line1: 'Thank you!', line2: 'Visit again!' },
+      { line1: 'Total:', line2: '$0.00' },
+      { line1: 'Scan Item', line2: '' },
+      { line1: 'Please Pay', line2: '' }
+    ];
+    let recentMessages = JSON.parse(localStorage.getItem('recentDisplayMessages') || '[]');
+    function saveRecent(line1, line2) {
+      recentMessages.unshift({ line1, line2, ts: Date.now() });
+      recentMessages = recentMessages.slice(0, 5);
+      localStorage.setItem('recentDisplayMessages', JSON.stringify(recentMessages));
+      renderRecent();
+    }
+    function renderRecent() {
+      const ul = document.getElementById('recentMessagesList');
+      ul.innerHTML = recentMessages.length ? '' : '<li class="list-group-item">No recent messages.</li>';
+      for (const msg of recentMessages) {
+        ul.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><strong>${msg.line1}</strong><br><small>${msg.line2}</small></span>
+          <button class="btn btn-sm btn-outline-primary" onclick="fillFromRecent('${encodeURIComponent(msg.line1)}','${encodeURIComponent(msg.line2)}')"><i class="fa-solid fa-arrow-up"></i></button>
+        </li>`;
+      }
+    }
+    window.fillFromRecent = function(l1, l2) {
+      document.getElementById('line1').value = decodeURIComponent(l1);
+      document.getElementById('line2').value = decodeURIComponent(l2);
+    }
+    // Quick templates
+    document.getElementById('quickTemplatesBtn').addEventListener('click', function() {
+      const dropdown = document.getElementById('templatesDropdown');
+      const menu = document.getElementById('templatesMenu');
+      menu.innerHTML = '';
+      templates.forEach((tpl, i) => {
+        menu.innerHTML += `<li><a class="dropdown-item" href="#" onclick="fillFromTemplate(${i});return false;"><strong>${tpl.line1}</strong> <span class='text-muted'>${tpl.line2}</span></a></li>`;
+      });
+      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    });
+    window.fillFromTemplate = function(idx) {
+      document.getElementById('line1').value = templates[idx].line1;
+      document.getElementById('line2').value = templates[idx].line2;
+      document.getElementById('templatesDropdown').style.display = 'none';
+    }
+
+    // Show text on display
+    document.getElementById('showTextForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const line1 = document.getElementById('line1').value;
+      const line2 = document.getElementById('line2').value;
+      const fontSize = document.getElementById('fontSizeSelect').value;
+      const scroll = document.getElementById('scrollText').checked;
+      const resultDiv = document.getElementById('showTextResult');
+      resultDiv.innerHTML = 'Sending...';
+      try {
+        const res = await fetch('/display/show', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line1, line2, fontSize, scroll })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error showing text'}</div>`;
+        } else {
+          resultDiv.innerHTML = `<div class="alert alert-success">${data.message || 'Text sent to display!'}</div>`;
+          saveRecent(line1, line2);
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      }
+    });
+
+    // Clear display
+    document.getElementById('clearDisplayBtn').addEventListener('click', async function() {
+      const resultDiv = document.getElementById('clearDisplayResult');
+      resultDiv.innerHTML = 'Clearing...';
+      try {
+        const res = await fetch('/display/clear', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error clearing display'}</div>`;
+        } else {
+          resultDiv.innerHTML = `<div class="alert alert-success">${data.message || 'Display cleared!'}</div>`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      }
+    });
+
+    // Initial render
+    renderRecent();
+  </script>
+</body>
+</html>
